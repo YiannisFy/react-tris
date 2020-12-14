@@ -1,0 +1,49 @@
+.block-row {
+	display: table-row;
+	border-width: 0;
+	float: none;
+	padding: 0;
+	margin: 0;
+}
+
+.block {
+	display: table-cell;
+	float: left;
+	border: solid 1px black;
+	width: 0.5cm;
+	height: 0.5cm;
+	padding: 0;
+	margin: 0;
+}
+
+.filled {
+	background-color: gray;
+}
+
+.filled-0 {
+	background-color: brown;
+}
+
+.filled-1 {
+	background-color: red;
+}
+
+.filled-2 {
+	background-color: green;
+}
+
+.filled-3 {
+	background-color: blue;
+}
+
+.filled-4 {
+	background-color: orange;
+}
+
+.filled-5 {
+	background-color: yellow;
+}
+
+.filled-6 {
+	background-color: purple;
+}
