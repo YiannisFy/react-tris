@@ -6,18 +6,15 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+		<div>
+			React-tris:<br/>
+			<div className="instructions">
+				Click the board to [re]start game.<br/>
+				<kbd>Z</kbd>, <kbd>X</kbd>: Rotate Piece.<br/>
+				<kbd>ESC</kbd>: Stop game.
+			</div>
+		</div>
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
 		<TetrisGame />
       </header>
     </div>

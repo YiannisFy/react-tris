@@ -2,6 +2,7 @@ import React from 'react';
 import './components.css';
 
 // A Tetris piece as an array of blocks.
+// Each block is represented by a {row, col} point-like object.
 class TetrisPiece extends Array {
 	copy() {
 		let copied = new TetrisPiece(...this.map(b => { return {row: b.row, col: b.col}}));
@@ -10,7 +11,7 @@ class TetrisPiece extends Array {
 		}
 		return copied;
 	}
-	
+
 	// Gets bounds of this piece.
 	getBounds() {
 		if (!this._bounds) {
@@ -71,7 +72,7 @@ class TetrisPiece extends Array {
 	}
 }
 
-// A block on the board.
+// A rendered block on the board.
 function Block(props) {
 	let fv = props.fillValue;
 	let className = "block";
@@ -92,7 +93,7 @@ function Block(props) {
 	);
 }
 
-// A row on the board.
+// A row rendered on the board.
 function Row(props) {
 	return (
 		<div className='block-row'>{
@@ -102,6 +103,9 @@ function Row(props) {
 }
 
 // The game board.
+// Placed blocks are represented in the state.blocks array, in a row-major manner.
+// Literal "false" indicates an empty spot.
+// Integer values indicate a block, with each value corresponding to blocks of the same color.
 class Board extends React.Component {
 	constructor(props) {
 		super(props);
@@ -269,10 +273,11 @@ class Board extends React.Component {
 
 	// Performs the next game step.
 	// @param fastFall: Whether the falling piece is falling fast.
+	// @param onCannotAdvance: Called whenever the game cannot proceed (e.g. the board is full).
 	// @return The score earned from this step.
-	advance(fastFall) {
+	advance(fastFall, onCannotAdvance) {
 		if (!this.state.curPiece) {
-			this.spawnPiece();
+			this.spawnPiece() || (onCannotAdvance && onCannotAdvance());
 		}
 		else if (this.moveDown()) {
 			// Moved the falling piece down. Give a point for fast falling.
@@ -307,10 +312,9 @@ class Board extends React.Component {
 			this.setState({curPiece: piece}); // Adds this to the component state.
 			return true;
 		}
-		else {
-			// New piece cannot be placed.
-			return false;
-		}
+
+		// New piece cannot be placed.
+		return false;
 	}
 
 	// Moves
@@ -353,7 +357,6 @@ class Board extends React.Component {
 	}
 
 	render() {
-		// Ensure we have integer values.
 		const rows = new Array(this.rows);
 		for (let i = 0; i < this.rows; i++) {
 			rows[i] = <Row blocks={this.state.blocks.slice(i * this.cols, (i + 1) * this.cols)}/>
@@ -377,32 +380,42 @@ class TetrisGame extends React.Component {
 		this.gameRef = React.createRef();
 		this.boardRef = React.createRef();
 
-		// Shadows the prototype methods. Needed for "fixing" this to this instance instead of the DOM event source.
+		// Shadows the prototype methods. Needed for fixing "this" to this instance instead of the DOM event source.
+		this.onClick = this.onClick.bind(this);
 		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onKeyUp = this.onKeyUp.bind(this);
 		this.advance = this.advance.bind(this);
 	}
 
 	componentDidMount() {
-		let gameRoot = this.gameRef.current;
+		const gameRoot = this.gameRef.current;
 		gameRoot.focus();
-		// Add key event listeners.
-		document.addEventListener('keydown', this.onKeyDown);
-		document.addEventListener('keyup', this.onKeyUp);
+		gameRoot.addEventListener('click', this.onClick);
 	}
 
 	componentWillUnmount() {
 		// Remove event listeners.
+		this.gameRef.current.removeEventListener('click', this.onClick);
+
+		// Ensure the game is stopped (to clean up the game timer & key listeners).
+		this.stopGame();
+	}
+
+	attachKeyListeners() {
+		document.addEventListener('keydown', this.onKeyDown);
+		document.addEventListener('keyup', this.onKeyUp);
+	}
+	
+	detachKeyListeners() {
 		document.removeEventListener('keydown', this.onKeyDown);
 		document.removeEventListener('keyup', this.onKeyUp);
-		// Ensure the game is stopped (to clean up the game timer).
-		this.stopGame();
 	}
 
 	startGame() {
 		this.score = 0; // Held here to avoid issues with coalesced state updates when increasing score.
 		this.setState({gameState: TetrisGame.GameStates.Running, score: 0});
 		this.boardRef.current.reset();
+		this.attachKeyListeners();
 		this._scheduleAdvance(0);
 	}
 
@@ -410,13 +423,14 @@ class TetrisGame extends React.Component {
 		this.setState({gameState: TetrisGame.GameStates.Stopped});
 		// Needed or we will get stray calls to advance() after component has been unmounted.
 		if (this._advanceTimeout) clearTimeout(this._advanceTimeout);
+		this.detachKeyListeners();
 	}
 
 	// Game timer step.
 	advance() {
 		if (this.state.gameState === TetrisGame.GameStates.Running) {
 			let board = this.boardRef.current;
-			this.score += board.advance(this.fastDrop);
+			this.score += board.advance(this.fastDrop, () => this.stopGame());
 			this.setState({score: this.score});
 			
 			// Stop fast-drop mode if the falling piece has settled.
@@ -424,7 +438,10 @@ class TetrisGame extends React.Component {
 				this.stopFastDrop();
 			}
 
-			this._scheduleAdvance(this.fastDrop ? TetrisGame.DropTimeStep : TetrisGame.TimeStep);
+			// If the game is still running then schedule the next step.
+			if (this.state.gameState === TetrisGame.GameStates.Running) {
+				this._scheduleAdvance(this.fastDrop ? TetrisGame.DropTimeStep : TetrisGame.TimeStep);
+			}
 		}
 	}
 
@@ -449,6 +466,20 @@ class TetrisGame extends React.Component {
 		}
 	}
 
+	onClick(evt) {
+		let handled = false;
+		if (this.state.gameState !== TetrisGame.GameStates.Running) {
+			this.startGame();
+			handled = true;
+		}
+
+		if (handled) {
+			evt.preventDefault();
+			evt.stopPropagation();
+		}
+		return !handled;
+	}
+
 	onKeyUp(evt) {
 		let handled = true;
 		switch(evt.key) {
@@ -462,6 +493,7 @@ class TetrisGame extends React.Component {
 
 		if (handled) {
 			evt.preventDefault();
+			evt.stopPropagation();
 		}
 		return !handled;
 	}
@@ -508,14 +540,15 @@ class TetrisGame extends React.Component {
 
 		if (handled) {
 			evt.preventDefault();
+			evt.stopPropagation();
 		}
 		return !handled;
 	}
 
 	render() {
 		return (
-			<div ref={this.gameRef}>
-				<div>{this.state.score}</div>
+			<div class="game" ref={this.gameRef}>
+				<div>Score: {this.state.score}{this.state.gameState === TetrisGame.GameStates.Stopped ? " - stopped" : ""}</div>
 				<Board columns={10} rows={20} ref={this.boardRef}/>
 			</div>
 		);
