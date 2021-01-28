@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import {TetrisGame} from './components.js';
+import TetrisGame from './components/TetrisGame.js';
 
 function App() {
   return (
