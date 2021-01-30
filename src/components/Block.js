@@ -2,7 +2,7 @@ import React from 'react';
 
 // A rendered block on the board.
 export default function Block(props) {
-	let fv = props.fillValue;
+	const fv = props.fillValue;
 	let className = "block";
 	switch(fv) {
 		case false:
