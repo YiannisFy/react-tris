@@ -60,6 +60,10 @@ function onKeyDown(evt, dispatch) {
 		case 'x':
 			dispatch(TetrisActions.rotateRight());
 			break;
+		case 'A':
+		case 'a':
+			dispatch(TetrisActions.cheat());
+			break;
 		case ' ':
 			dispatch(TetrisActions.startGame());
 			break;

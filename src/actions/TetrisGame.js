@@ -13,6 +13,7 @@ const slice = createSlice({
 		rotateLeft: TetrisGame.rotateLeft,
 		rotateRight: TetrisGame.rotateRight,
 		advance: TetrisGame.advance,
+		cheat: TetrisGame.cheat,
 		setFastDrop: (state, action) => TetrisGame.setFastDrop(state, action.payload)
 	}
 });
@@ -26,6 +27,7 @@ export const {
 	rotateLeft,
 	rotateRight,
 	advance,
+	cheat,
 	setFastDrop
 } = slice.actions;
 

@@ -6,6 +6,9 @@ const GameStates = {
 	Running: 1
 };
 
+const MaxCheats = 3;
+const CheatPenalty = 10;
+
 // Operations affecting the whole game.
 
 // Creates a new game state.
@@ -15,6 +18,7 @@ function create() {
 		curPiece: null,
 		board: Board.create(),
 		score: 0,
+		remCheats: MaxCheats,
 		gameState: GameStates.Stopped,
 		// Whether the falling piece is falling fast.
 		fastFall: false
@@ -27,6 +31,7 @@ function resetProgress(game) {
 	game.curPiece = null;
 	Board.reset(game.board);
 	game.score = 0;
+	game.remCheats = MaxCheats;
 	game.fastFall = false;
 }
 
@@ -157,9 +162,30 @@ function setFastDrop(game, value) {
 	game.fastFall = value && (GameStates.Running === game.gameState);
 }
 
+// Cheats the game by removing the bottom row of the board.
+// @param game The game model.
+function cheat(game) {
+	const { remCheats, board, curPiece, score } = game;
+	if (remCheats > 0) {
+		// Remove the falling piece from the board before removing the bottom row, as all rows will move.
+		if (curPiece)
+			Board.putPiece(board, curPiece, false);
+		
+		if (Board.cheat(board, board.rows.length - 1)) {
+			game.remCheats = remCheats - 1;
+			game.score = Math.max(0, score - CheatPenalty);
+		}
+		
+		// Restore the falling piece.
+		if (curPiece)
+			Board.putPiece(board, curPiece, curPiece.colorIndex);
+	}
+}
+
 export {
 	GameStates,
 	advance,
+	cheat,
 	create,
 	moveLeft,
 	moveRight,

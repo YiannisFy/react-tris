@@ -113,6 +113,24 @@ function removeRow(board, rowIndex) {
 	}
 }
 
+// Activates a cheat by removing the bottom row.
+// NOTE: Assumes the currently falling piece is not on the board.
+// @param board The game board.
+// @return Whether cheating was successful.
+function cheat(board) {
+	const rows = board.rows;
+	if (rows.length > 0) {
+		const lastRow = rows[rows.length - 1];
+		// Remove if not already empty (which also means the whole board is empty).
+		// "false" stands for empty block positions.
+		if (lastRow.findIndex(v => v !== false) >= 0) {
+			removeRow(board, rows.length - 1);
+			return true;
+		}
+	}
+	return false;
+}
+
 // Removes the full rows from the board.
 // @param board The board.
 // @return The number of full rows removed.
@@ -152,6 +170,7 @@ function removeFullRows(board) {
 }
 
 export {
+	cheat,
 	checkPiece,
 	create,
 	movePiece,
