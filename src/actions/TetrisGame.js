@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import TetrisGame from '../models/TetrisGame.js';
+import * as TetrisGame from '../models/TetrisGame.js';
 
 // TODO: Pass board dimensions from React component props.
 const slice = createSlice({

@@ -122,7 +122,7 @@ function useAdvanceTimer(gameState, dispatch) {
 	React.useEffect(() => {
 		const action = () => {
 			dispatch(TetrisActions.advance());
-			// Set "timerTicked" in React state to trigger an update and re-run of this "useEffect" code.
+			// Set this in React state to trigger an update and set the next timeout from this "useEffect" code.
 			// It would not be needed if this component was somehow dependent on the game state changes caused by the "advance" action.
 			refSetStrobe.current(!timerStrobe);
 		};
