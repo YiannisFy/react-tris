@@ -165,8 +165,8 @@ function setFastDrop(game, value) {
 // Cheats the game by removing the bottom row of the board.
 // @param game The game model.
 function cheat(game) {
-	const { remCheats, board, curPiece, score } = game;
-	if (remCheats > 0) {
+	const { gameState, remCheats, board, curPiece, score } = game;
+	if (remCheats > 0 && gameState === GameStates.Running) {
 		// Remove the falling piece from the board before removing the bottom row, as all rows will move.
 		if (curPiece)
 			Board.putPiece(board, curPiece, false);
