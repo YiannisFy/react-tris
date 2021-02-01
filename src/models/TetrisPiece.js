@@ -13,8 +13,10 @@ const PieceTemplates = [
 // A Tetris piece as an array of block positions and a color index.
 // Each block position is represented by a {row, col} point-like object.
 
-// Creates a new Tetris piece based on one of the piece templates.
-// @return The new piece.
+/**
+ * Creates a new Tetris piece based on one of the piece templates.
+ * @returns {object} The new piece.
+ */
 function createRandom() {
 	const pieceIndex = Math.trunc(Math.random() * PieceTemplates.length);
 	// Copy the template.
@@ -27,6 +29,11 @@ function createRandom() {
 	};
 }
 
+/**
+ * Creates a copy of a piece.
+ * @param {object} piece The piece to copy.
+ * @returns {object} The piece copy.
+ */
 function copy(piece) {
 	return {
 		blocks: piece.blocks.map(b => { return {row: b.row, col: b.col}}),
@@ -34,9 +41,11 @@ function copy(piece) {
 	};
 }
 
-// Gets bounds of this piece.
-// @param piece The piece to measure.
-// @return The piece bounds.
+/**
+ * Gets bounds of this piece.
+ * @param {object} piece The piece to measure.
+ * @returns {object} The piece bounds.
+ */
 function getBounds(piece) {
 	if (!piece._bounds) {
 		const blocks = piece.blocks;
@@ -50,9 +59,11 @@ function getBounds(piece) {
 	return piece._bounds;
 }
 
-// Moves this piece w/o placing it on the board.
-// @param The piece to move.
-// @param translation The translation vector.
+/**
+ * Moves this piece w/o placing it on the board.
+ * @param {object} piece The piece to move.
+ * @param {{col: number; row: number}} translation The translation vector.
+ */
 function translate(piece, translation) {
 	for (let block of piece.blocks) {
 		block.col += translation.cols;
@@ -68,13 +79,19 @@ function translate(piece, translation) {
 	}
 }
 
+/**
+ * Creates a function that can translate any piece by a fixed translation vector.
+ * @param {{col: number; row: number}} translation The translation vector.
+ */
 const getTranslateOp = translation => piece => {
 	return translate(piece, translation);
 };
 
-// Rotates this piece w/o placing on the board.
-// @param The piece to move.
-// @param clockwise: The rotation direction (true is clockwise).
+/**
+ * Rotates this piece w/o placing on the board.
+ * @param {object} piece The piece to move.
+ * @param {boolean} clockwise The rotation direction (true is clockwise).
+ */
 function rotate(piece, clockwise) {
 	let bounds = getBounds(piece);
 
@@ -102,6 +119,10 @@ function rotate(piece, clockwise) {
 	translate(piece, {rows: bounds.top - rotBounds.top, cols: bounds.left - rotBounds.left});
 }
 
+/**
+ * Creates a function that can rotate any piece.
+ * @param {boolean} clockwise The rotation direction (true is clockwise).
+ */
 const getRotateOp = clockwise => piece => {
 	return rotate(piece, clockwise);
 };

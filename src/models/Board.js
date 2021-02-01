@@ -8,9 +8,11 @@ const Rows = 20, Cols = 10;
 // Representing rows individually (vs. using a flat block array) is beneficial because
 // rows provide finer state partitioning and come handy when removing rows from the board.
 
-// Creates an empty game board.
-// As a reducer, it returns the empty board as the new state.
-// @return A new game board.
+/**
+ * Creates an empty game board.
+ * As a reducer, it returns the empty board as the new state.
+ * @returns {object} A new game board.
+ */
 function create() {
 	let board = {
 		rows: new Array(Rows),
@@ -20,8 +22,10 @@ function create() {
 	return board;
 }
 
-// Empties/initializes the board rows.
-// @param board The board.
+/**
+ * Empties/initializes the board rows.
+ * @param board The board.
+ */
 function reset(board) {
 	const {rows, nrCols} = board;
 	for (let i = rows.length - 1; i >= 0; i--) {
@@ -31,10 +35,12 @@ function reset(board) {
 	}
 }
 
-// Places or removes a piece on the board.
-// @param board The board.
-// @param piece The piece to place on the board.
-// @param blockValue The value used for filling the piece on the board. If an array, its values will be used for each block of the piece.
+/**
+ * Places or removes a piece on the board.
+ * @param {object} board The board.
+ * @param {object} piece The piece to place on the board.
+ * @param {number | false | (number | false)[]} blockValue The value used for filling the piece on the board. If an array, its values will be used for each block of the piece.
+ */
 function putPiece(board, piece, blockValue) {
 	const rows = board.rows;
 	if (blockValue instanceof Array) {
@@ -50,10 +56,12 @@ function putPiece(board, piece, blockValue) {
 	}
 }
 
-// Bounds & collisions check.
-// @param board The board.
-// @param piece The piece to be checked against the board & its contents.
-// @return Whether the piece collides with the board boundaries or any block currently on the board.
+/**
+ * Bounds & collisions check.
+ * @param {object} board The board.
+ * @param {object} piece The piece to be checked against the board & its contents.
+ * @returns {boolean} Whether the piece collides with the board boundaries or any block currently on the board.
+ */
 function checkPiece(board, piece) {
 	const {nrCols, rows} = board;
 	for (const block of piece.blocks) {
@@ -66,11 +74,13 @@ function checkPiece(board, piece) {
 	return true;
 }
 
-// Tries to move a piece that has been placed on the board.
-// @param board The board.
-// @param piece The piece to move. It is assumed that all board positions corresponding to the piece are already filled.
-// @param movement A function that can transform the piece object.
-// @return Whether the movement was possible.
+/**
+ * Tries to move a piece that has been placed on the board.
+ * @param {object} board The board.
+ * @param {object} piece The piece to move. It is assumed that all board positions corresponding to the piece are already filled.
+ * @param {(piece: object) => void} movement A function that can transform the piece object.
+ * @returns {boolean} Whether the movement was possible.
+ */
 function movePiece(board, piece, movement) {
 	// Remove piece from board. This helps with both filling and the collision checks.
 	putPiece(board, piece, false);
@@ -98,9 +108,11 @@ function movePiece(board, piece, movement) {
 	return true;
 }
 
-// Removes the specified row from the board and inserts an empty one at the board top.
-// @param board The board.
-// @param rowIndex The row index of the row to be removed.
+/**
+ * Removes the specified row from the board and inserts an empty one at the board top.
+ * @param {object} board The board.
+ * @param {number} rowIndex 
+ */
 function removeRow(board, rowIndex) {
 	const {nrCols, rows} = board;
 	if (rowIndex >= 0 && rowIndex < rows.length) {
@@ -113,10 +125,12 @@ function removeRow(board, rowIndex) {
 	}
 }
 
-// Activates a cheat by removing the bottom row.
-// NOTE: Assumes the currently falling piece is not on the board.
-// @param board The game board.
-// @return Whether cheating was successful.
+/**
+ * Activates a cheat by removing the bottom row.
+ * NOTE: Assumes the currently falling piece is not on the board.
+ * @param {object} board The board
+ * @returns {boolean} Whether cheating was successful.
+ */
 function cheat(board) {
 	const rows = board.rows;
 	if (rows.length > 0) {
@@ -131,9 +145,11 @@ function cheat(board) {
 	return false;
 }
 
-// Removes the full rows from the board.
-// @param board The board.
-// @return The number of full rows removed.
+/**
+ * Removes the full rows from the board.
+ * @param {object} board The board.
+ * @returns {boolean} The number of full rows removed.
+ */
 function removeFullRows(board) {
 	const {nrCols, rows} = board;
 	let removed = 0;

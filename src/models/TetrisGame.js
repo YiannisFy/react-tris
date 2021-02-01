@@ -11,8 +11,10 @@ const CheatPenalty = 10;
 
 // Operations affecting the whole game.
 
-// Creates a new game state.
-// @return The new game model.
+/**
+ * Creates a new game state.
+ * @return {object} The new game model.
+ */
 function create() {
 	return {
 		curPiece: null,
@@ -25,8 +27,10 @@ function create() {
 	};
 }
 
-// Resets the game board & score.
-// @param game The game model.
+/**
+ * Resets the game board & score.
+ * @param {object} game The game model.
+ */
 function resetProgress(game) {
 	game.curPiece = null;
 	Board.reset(game.board);
@@ -35,15 +39,19 @@ function resetProgress(game) {
 	game.fastFall = false;
 }
 
-// Permanently places the current piece on the board.
-// @param game The game model.
+/**
+ * Permanently places the current piece on the board.
+ * @param {object} game The game model.
+ */
 function settleCurrentPiece(game) {
 	game.curPiece = null;
 }
 
-// Spawns a random piece on the board.
-// @param game The game model.
-// @return Whether the piece can be placed on the board.
+/**
+ * Spawns a random piece on the board.
+ * @param {object} game The game model.
+ * @returns {boolean} Whether the piece can be placed on the board.
+ */
 function spawnPiece(game) {
 	const board = game.board;
 	let piece = TetrisPiece.createRandom();
@@ -62,9 +70,11 @@ function spawnPiece(game) {
 	return false;
 }
 
-// Moves the current piece down one step.
-// @param game The game model.
-// @return Whether the movement was possible.
+/**
+ * Moves the current piece down one step.
+ * @param {object} game The game model.
+ * @returns Whether the movement was possible.
+ */
 function moveDown(game) {
 	const { curPiece, board } = game;
 	if (curPiece) {
@@ -75,8 +85,10 @@ function moveDown(game) {
 
 // Public API.
 
-// Attempts to move the current piece one column to the left.
-// @param game The game model.
+/**
+ * Attempts to move the current piece one column to the left.
+ * @param {object} game The game model.
+ */
 function moveLeft(game) {
 	const { curPiece, board, gameState } = game;
 	if (gameState === GameStates.Running) {
@@ -86,8 +98,10 @@ function moveLeft(game) {
 	}
 }
 
-// Attempts to move the current piece one column to the right.
-// @param game The game model.
+/**
+ * Attempts to move the current piece one column to the right.
+ * @param {object} game The game model.
+ */
 function moveRight(game) {
 	const { curPiece, board, gameState } = game;
 	if (gameState === GameStates.Running) {
@@ -97,8 +111,10 @@ function moveRight(game) {
 	}
 }
 
-// Performs the next game step.
-// @param game The game model.
+/**
+ * Performs the next game step.
+ * @param {object} game The game model.
+ */
 function advance(game) {
 	if (game.gameState === GameStates.Running) {
 		const { fastFall } = game;
@@ -120,8 +136,10 @@ function advance(game) {
 	}
 }
 
-// Rotates the current piece counter-clockwise.
-// @param game The game model.
+/**
+ * Rotates the current piece counter-clockwise.
+ * @param {object} game The game model.
+ */
 function rotateLeft(game) {
 	const { curPiece, board, gameState } = game;
 	if (gameState === GameStates.Running) {
@@ -131,8 +149,10 @@ function rotateLeft(game) {
 	}
 }
 
-// Rotates the current piece clockwise.
-// @param game The game model.
+/**
+ * Rotates the current piece clockwise.
+ * @param {object} game The game model.
+ */
 function rotateRight(game) {
 	const { curPiece, board, gameState } = game;
 	if (gameState === GameStates.Running) {
@@ -142,8 +162,10 @@ function rotateRight(game) {
 	}
 }
 
-// Clears progress and moves the game to the starting state.
-// @param game The game model.
+/**
+ * Clears progress and moves the game to the starting state.
+ * @param {object} game The game model.
+ */
 function startGame(game) {
 	if (GameStates.Running !== game.gameState) {
 		game.gameState = GameStates.Running;
@@ -151,19 +173,28 @@ function startGame(game) {
 	}
 }
 
-// Moves the game to the stopped state.
-// @param game The game model.
+/**
+ * Moves the game to the stopped state.
+ * @param {object} game The game model.
+ */
 function stopGame(game) {
 	game.gameState = GameStates.Stopped;
 	game.fastFall = false;
 }
 
+/**
+ * Controls fast drop. Has no effect if the game is not running.
+ * @param {object} game The game model.
+ * @param {boolean} value Whether fast-drop should be active.
+ */
 function setFastDrop(game, value) {
 	game.fastFall = value && (GameStates.Running === game.gameState);
 }
 
-// Cheats the game by removing the bottom row of the board.
+/**
+ * Cheats the game by removing the bottom row of the board.
 // @param game The game model.
+ */
 function cheat(game) {
 	const { gameState, remCheats, board, curPiece, score } = game;
 	if (remCheats > 0 && gameState === GameStates.Running) {
