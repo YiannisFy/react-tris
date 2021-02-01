@@ -117,7 +117,6 @@ const FastTimeStep = 20;
 // Hook that controls the game advance event.
 function useAdvanceTimer(gameState, dispatch) {
 	const fastFall = useSelector(state => state.reactris.fastFall);
-	console.info("fastFall = " + fastFall);
 	// This flag is toggled by the timeout handler and it triggers another call to the timer setup code in "useEffect" below.
 	const [timerStrobe, setTimerStrobe] = React.useState(false);
 	const refSetStrobe = React.useRef(setTimerStrobe);
