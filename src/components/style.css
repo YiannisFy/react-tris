@@ -54,3 +54,20 @@
 .filled-6 {
 	background-color: purple;
 }
+
+@keyframes fadeToGray {
+	to { background-color: gray; }
+}
+
+.stopped .filled,
+.stopped .filled-0,
+.stopped .filled-1,
+.stopped .filled-2,
+.stopped .filled-3,
+.stopped .filled-4,
+.stopped .filled-5,
+.stopped .filled-6 {
+	animation-name: fadeToGray;
+	animation-duration: 3s;
+	animation-fill-mode: forwards;
+}

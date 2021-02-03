@@ -25,8 +25,9 @@ function TetrisGame({dispatch}) {
 		};
 	}, [dispatch, inputListeners]); // NOTE: The dependencies do not really change.
 
+	const cssClass = (gameState === GameStates.Running) ? "game" : "game stopped";
 	return (
-		<div className="game" ref={gameDomRef}>
+		<div className={cssClass} ref={gameDomRef}>
 			<div>Score: {score}{gameState === GameStates.Stopped ? " - stopped" : ""}</div>
 			<Board/>
 		</div>
