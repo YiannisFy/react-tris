@@ -15,7 +15,6 @@
 
 .block {
 	display: table-cell;
-	float: left;
 	border: solid 1px black;
 	width: 0.5cm;
 	height: 0.5cm;
