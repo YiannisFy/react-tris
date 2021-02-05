@@ -13,7 +13,6 @@
 	**git clone https://github.com/YiannisFy/react-tris.git react-tris**
 
 3. From a command prompt/shell, go to the project folder, e.g. "cd react-tris" and run this command to download all dependencies:
-Note
 
 	**npm install**
 
