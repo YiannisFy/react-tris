@@ -105,28 +105,14 @@ const FastTimeStep = 20;
  */
 function useAdvanceTimer(gameState, advance) {
 	const fastFall = useSelector(state => state.reactris.fastFall);
-	// This flag is toggled by the timeout handler and it triggers another call to the timer setup code in "useEffect" below.
-	const [timerStrobe, setTimerStrobe] = React.useState(false);
 	const newInterval = gameState === GameStates.Running ? (fastFall ? FastTimeStep : TimeStep) : 0;
 
 	React.useEffect(() => {
-		const action = () => {
-			advance();
-			// Set this in React state to trigger an update and set the next timeout from this "useEffect" code.
-			// It would not be needed if this component was somehow dependent on the game state changes caused by the "advance" action.
-			setTimerStrobe(!timerStrobe);
-		};
-
-		const curTimer = newInterval
-			? setTimeout(action, newInterval)
-			: null;
-
-		if (null != curTimer) {
-			return () => {
-				clearTimeout(curTimer);
-			}
+		if (newInterval) {
+			const curTimer = setInterval(advance, newInterval);
+			return () => { clearInterval(curTimer); };
 		}
-	}, [gameState, timerStrobe, setTimerStrobe, advance, newInterval]);
+	}, [advance, newInterval]);
 }
 
 export { useAdvanceTimer, useGameInput };
