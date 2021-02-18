@@ -1,16 +1,13 @@
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
 import logo from './logo.svg';
 import './App.css';
-import { reducer } from './actions/TetrisGame.js';
+import { store as gameStore } from './redux';
 import TetrisGame from './components/TetrisGame.js';
 import CheatButton from './components/CheatButton.js';
 
-const store = configureStore({reducer: {reactris: reducer}});
-
 function App() {
   return (
-	<Provider store={store}>
+	<Provider store={gameStore}>
 		<div className="App">
 		  <header className="App-header">
 			<div>

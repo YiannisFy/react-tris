@@ -1,10 +1,9 @@
 import React from 'react';
 
 // A rendered block on the board.
-export default function Block(props) {
-	const fv = props.fillValue;
+export default function Block({fillValue}) {
 	let className = "block";
-	switch(fv) {
+	switch(fillValue) {
 		case false:
 		case undefined:
 			break;
@@ -12,7 +11,7 @@ export default function Block(props) {
 			className = 'block filled';
 			break;
 		default:
-			className = 'block filled-' + fv;
+			className = 'block filled-' + fillValue;
 			break;
 	}
 
