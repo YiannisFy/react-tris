@@ -5,7 +5,8 @@ import { GameStates } from '../models/TetrisGame';
 import { advance } from '../actions/TetrisGame';
 import './style.css';
 import Board from './Board';
-import * as Events from './Events';
+import { useGameInput } from './hooks/input';
+import { useAdvanceTimer } from './hooks/timer';
 
 // The game component.
 function TetrisGame() {
@@ -13,8 +14,8 @@ function TetrisGame() {
 	const gameState = useSelector(state => state.reactris.gameState);
 	const score = useSelector(state => state.reactris.score);
 	const board = useSelector(state => state.reactris.board);
-	Events.useGameInput(gameDomRef);
-	Events.useAdvanceTimer(gameState, advance);
+	useGameInput(gameDomRef);
+	useAdvanceTimer(gameState, advance);
 
 	const cssClass = (gameState === GameStates.Running) ? "game" : "game stopped";
 	return (

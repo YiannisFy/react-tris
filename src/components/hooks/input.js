@@ -1,7 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { GameStates } from '../models/TetrisGame';
-import * as TetrisActions from '../actions/TetrisGame';
+import * as TetrisActions from '../../actions/TetrisGame';
 
 // Input event handlers.
 
@@ -80,7 +78,7 @@ function onKeyDown(evt) {
  * Controls input listeners.
  * @param {React.MutableRefObject<object>} gameDomRef Reference to the game root element (corresponding to "TetrisGame" component).
  */
-function useGameInput(gameDomRef) {
+export function useGameInput(gameDomRef) {
 	React.useEffect(() => {
 		const gameDom = gameDomRef.current;
 		document.addEventListener('keydown', onKeyDown);
@@ -94,25 +92,3 @@ function useGameInput(gameDomRef) {
 		};
 	}, [gameDomRef]);
 }
-
-const TimeStep = 300;
-const FastTimeStep = 20;
-
-/**
- * Hook that controls the game advance event.
- * @param {number} gameState The current game state.
- * @param {() => void} advance The advance action.
- */
-function useAdvanceTimer(gameState, advance) {
-	const fastFall = useSelector(state => state.reactris.fastFall);
-	const newInterval = gameState === GameStates.Running ? (fastFall ? FastTimeStep : TimeStep) : 0;
-
-	React.useEffect(() => {
-		if (newInterval) {
-			const curTimer = setInterval(advance, newInterval);
-			return () => { clearInterval(curTimer); };
-		}
-	}, [advance, newInterval]);
-}
-
-export { useAdvanceTimer, useGameInput };
