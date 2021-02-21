@@ -1,21 +1,21 @@
 import React from 'react';
-import * as TetrisActions from '../../actions/TetrisGame';
+import {getGameActions} from '../../actions/TetrisGame';
 
 // Input event handlers.
 
-function onClick(evt) {
-	TetrisActions.startGame();
+function onClick(evt, gameActions) {
+	gameActions.startGame();
 
 	evt.preventDefault();
 	evt.stopPropagation();
 	return false;
 }
 
-function onKeyUp(evt) {
+function onKeyUp(evt, gameActions) {
 	let handled = true;
 	switch(evt.key) {
 		case 'ArrowDown':
-			TetrisActions.setFastDrop(false);
+			gameActions.setFastDrop(false);
 			break;
 		default:
 			handled = false;
@@ -29,38 +29,38 @@ function onKeyUp(evt) {
 	return !handled;
 }
 
-function onKeyDown(evt) {
+function onKeyDown(evt, gameActions) {
 	let handled = true;
 	switch (evt.key) {
 		case 'Escape':
-			TetrisActions.stopGame();
+			gameActions.stopGame();
 			break;
 		case 'ArrowUp':
 			// We handle this to avoid having the page scroll up while playing.
 			break;
 		case 'ArrowDown':
-			TetrisActions.setFastDrop(true);
+			gameActions.setFastDrop(true);
 			break;
 		case 'ArrowLeft':
-			TetrisActions.moveLeft();
+			gameActions.moveLeft();
 			break;
 		case 'ArrowRight':
-			TetrisActions.moveRight();
+			gameActions.moveRight();
 			break;
 		case 'Z':
 		case 'z':
-			TetrisActions.rotateLeft();
+			gameActions.rotateLeft();
 			break;
 		case 'X':
 		case 'x':
-			TetrisActions.rotateRight();
+			gameActions.rotateRight();
 			break;
 		case 'A':
 		case 'a':
-			TetrisActions.cheat();
+			gameActions.cheat();
 			break;
 		case ' ':
-			TetrisActions.startGame();
+			gameActions.startGame();
 			break;
 		default: handled = false;
 	}
@@ -77,18 +77,24 @@ function onKeyDown(evt) {
 /**
  * Controls input listeners.
  * @param {React.MutableRefObject<object>} gameDomRef Reference to the game root element (corresponding to "TetrisGame" component).
+ * @param {string} gameId The game ID.
  */
-export function useGameInput(gameDomRef) {
+export function useGameInput(gameDomRef, gameId) {
 	React.useEffect(() => {
 		const gameDom = gameDomRef.current;
-		document.addEventListener('keydown', onKeyDown);
-		document.addEventListener('keyup', onKeyUp);
-		gameDom.addEventListener('click', onClick);
+		const gameActions = getGameActions(gameId);
+		const kd = evt => onKeyDown(evt, gameActions);
+		const ku = evt => onKeyUp(evt, gameActions);
+		const oc = evt => onClick(evt, gameActions);
+
+		document.addEventListener('keydown', kd);
+		document.addEventListener('keyup', ku);
+		gameDom.addEventListener('click', oc);
 
 		return () => {
-			document.removeEventListener('keydown', onKeyDown);
-			document.removeEventListener('keyup', onKeyUp);
-			gameDom.removeEventListener('click', onClick);
+			document.removeEventListener('keydown', kd);
+			document.removeEventListener('keyup', ku);
+			gameDom.removeEventListener('click', oc);
 		};
-	}, [gameDomRef]);
+	}, [gameId, gameDomRef]);
 }

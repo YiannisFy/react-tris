@@ -1,14 +1,17 @@
 import { bindActionCreators } from '@reduxjs/toolkit';
-import { store, slice } from '../redux';
+import { store, getSliceForGame } from '../redux/init';
 
-export const {
-	startGame,
-	stopGame,
-	moveLeft,
-	moveRight,
-	rotateLeft,
-	rotateRight,
-	advance,
-	cheat,
-	setFastDrop
-} = bindActionCreators(slice.actions, store.dispatch);
+/**
+ * Holds the actions for each game.
+ */
+const gameActions = new Map();
+
+export function getGameActions(gameId) {
+	let actions;
+	if (gameActions.has(gameId)) actions = gameActions.get(gameId);
+	else {
+		actions = bindActionCreators(getSliceForGame(gameId).actions, store.dispatch);
+		gameActions.set(gameId, actions);
+	}
+	return actions;
+}

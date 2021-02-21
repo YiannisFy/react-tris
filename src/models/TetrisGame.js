@@ -13,10 +13,12 @@ const CheatPenalty = 10;
 
 /**
  * Creates a new game state.
+ * @param {string?} gameId (Optional) identifies the game if there are multiple games in the current app.
  * @return {object} The new game model.
  */
-function create() {
+function create(gameId = "") {
 	return {
+		gameId: gameId,
 		curPiece: null,
 		board: Board.create(),
 		score: 0,

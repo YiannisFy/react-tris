@@ -1,21 +1,19 @@
 // TODO: Support multiple TetrisGame components.
 import React from 'react';
-import { useSelector, connect } from 'react-redux';
 import { GameStates } from '../models/TetrisGame';
-import { advance } from '../actions/TetrisGame';
-import './style.css';
+import { getGameActions } from '../actions/TetrisGame';
 import Board from './Board';
 import { useGameInput } from './hooks/input';
 import { useAdvanceTimer } from './hooks/timer';
+import './style.css';
 
 // The game component.
-function TetrisGame() {
+export default function TetrisGame({game}) {
 	const gameDomRef = React.useRef(null);
-	const gameState = useSelector(state => state.reactris.gameState);
-	const score = useSelector(state => state.reactris.score);
-	const board = useSelector(state => state.reactris.board);
-	useGameInput(gameDomRef);
-	useAdvanceTimer(gameState, advance);
+	const {score, board, gameState, fastFall, gameId} = game;
+	const actions = getGameActions(gameId);
+	useGameInput(gameDomRef, gameId);
+	useAdvanceTimer(gameState, fastFall, actions.advance);
 
 	const cssClass = (gameState === GameStates.Running) ? "game" : "game stopped";
 	return (
@@ -25,5 +23,3 @@ function TetrisGame() {
 		</div>
 	);
 }
-
-export default connect()(TetrisGame);
