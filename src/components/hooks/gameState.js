@@ -5,7 +5,7 @@ import { create, createBoard } from '../../models/TetrisGame';
 import { getSlice } from '../../redux/TetrisGame';
 
 /**
- * Selects & initializes the game state of the specified game without enforcing the board to be created.
+ * Selects/creates the state of the specified game without enforcing the board to be created.
  * @param {string} gameId Identifies the game instance.
  * @returns The game state without guarantees that the board has been created.
  */
@@ -20,7 +20,7 @@ export function useBoardlessState(gameId="") {
             getSlice(gameId);
     }, [initGame, gameId]);
 
-    // Surrogate state for until Redux slice is initialized.
+    // Surrogate state for until Redux slice has been initialized (next render).
     // NOTE: Must be identical to the slice created in the effect below.
     if (!gState)
         gState = create(gameId);
@@ -29,8 +29,7 @@ export function useBoardlessState(gameId="") {
 }
 
 /**
- * Selects the game state of a TetrisGame component from the Redux store.
- * If the game state has not already been initialized, issues an action to create it.
+ * Selects/creates the state of the specified game and ensures that the game board has been created.
  * @param {string} gameId Game identifier. Used to look up the game state.
  * @param {number?} nrRows The number of block rows in the game board (default is 25).
  * @param {number?} nrCols The number of block columns in the game board (default is 10).
@@ -38,7 +37,7 @@ export function useBoardlessState(gameId="") {
  */
 export function useGameState(gameId="", nrRows = 25, nrCols = 10) {
     let gState = useBoardlessState(gameId)
-    const initBoard = !gState.board && undefined !== nrRows && undefined !== nrCols;
+    const initBoard = !gState.board;
 
     // Surrogate for missing board data.
     // NOTE: Must be identical to the data created by the "createBoard" Redux action in the effect below.
