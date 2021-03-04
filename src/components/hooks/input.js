@@ -1,76 +1,7 @@
 import React from 'react';
 import {getGameActions} from '../../actions/TetrisGame';
-
-// Input event handlers.
-
-function onClick(evt, gameActions) {
-	gameActions.startGame();
-
-	evt.preventDefault();
-	evt.stopPropagation();
-	return false;
-}
-
-function onKeyUp(evt, gameActions) {
-	let handled = true;
-	switch(evt.key) {
-		case 'ArrowDown':
-			gameActions.setFastDrop(false);
-			break;
-		default:
-			handled = false;
-			break;
-	}
-
-	if (handled) {
-		evt.preventDefault();
-		evt.stopPropagation();
-	}
-	return !handled;
-}
-
-function onKeyDown(evt, gameActions) {
-	let handled = true;
-	switch (evt.key) {
-		case 'Escape':
-			gameActions.stopGame();
-			break;
-		case 'ArrowUp':
-			// We handle this to avoid having the page scroll up while playing.
-			break;
-		case 'ArrowDown':
-			gameActions.setFastDrop(true);
-			break;
-		case 'ArrowLeft':
-			gameActions.moveLeft();
-			break;
-		case 'ArrowRight':
-			gameActions.moveRight();
-			break;
-		case 'Z':
-		case 'z':
-			gameActions.rotateLeft();
-			break;
-		case 'X':
-		case 'x':
-			gameActions.rotateRight();
-			break;
-		case 'A':
-		case 'a':
-			gameActions.cheat();
-			break;
-		case ' ':
-			gameActions.startGame();
-			break;
-		default: handled = false;
-	}
-
-	if (handled) {
-		evt.preventDefault();
-		evt.stopPropagation();
-	}
-	return !handled;
-}
+import { KeyBindings } from '../input/bindings';
+import { onKeyDown, onKeyUp, onClick } from '../input/events';
 
 // Event listener management.
 
@@ -78,13 +9,14 @@ function onKeyDown(evt, gameActions) {
  * Controls input listeners.
  * @param {React.MutableRefObject<object>} gameDomRef Reference to the game root element (corresponding to "TetrisGame" component).
  * @param {string} gameId The game ID.
+ * @param {object} bindings The key bindings (optional).
  */
-export function useGameInput(gameDomRef, gameId) {
+export function useGameInput(gameDomRef, gameId, bindings = new KeyBindings()) {
 	React.useEffect(() => {
 		const gameDom = gameDomRef.current;
 		const gameActions = getGameActions(gameId);
-		const kd = evt => onKeyDown(evt, gameActions);
-		const ku = evt => onKeyUp(evt, gameActions);
+		const kd = evt => onKeyDown(evt, gameActions, bindings);
+		const ku = evt => onKeyUp(evt, gameActions, bindings);
 		const oc = evt => onClick(evt, gameActions);
 
 		document.addEventListener('keydown', kd);
