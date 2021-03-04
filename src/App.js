@@ -2,8 +2,8 @@ import { Provider } from 'react-redux';
 import logo from './logo.svg';
 import './App.css';
 import { setupRedux, store } from './redux/init';
-import TetrisGame from './redux/TetrisGame'
-import CheatButton from './redux/CheatButton';
+import TetrisGame from './components/TetrisGame'
+import CheatButton from './components/CheatButton';
 
 setupRedux();
 

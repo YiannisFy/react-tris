@@ -1,5 +1,6 @@
 import { bindActionCreators } from '@reduxjs/toolkit';
-import { store, getSliceForGame } from '../redux/init';
+import { store } from '../redux/init';
+import { getSlice } from '../redux/TetrisGame';
 
 /**
  * Holds the actions for each game.
@@ -10,7 +11,7 @@ export function getGameActions(gameId) {
 	let actions;
 	if (gameActions.has(gameId)) actions = gameActions.get(gameId);
 	else {
-		actions = bindActionCreators(getSliceForGame(gameId).actions, store.dispatch);
+		actions = bindActionCreators(getSlice(gameId).actions, store.dispatch);
 		gameActions.set(gameId, actions);
 	}
 	return actions;

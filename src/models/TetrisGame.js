@@ -14,19 +14,28 @@ const CheatPenalty = 10;
 /**
  * Creates a new game state.
  * @param {string?} gameId (Optional) identifies the game if there are multiple games in the current app.
- * @return {object} The new game model.
+ * @return {object} The new game model. The actual game board should be initialized with a call to <code>createBoard</code>.
  */
 function create(gameId = "") {
 	return {
 		gameId: gameId,
 		curPiece: null,
-		board: Board.create(),
 		score: 0,
 		remCheats: MaxCheats,
 		gameState: GameStates.Stopped,
 		// Whether the falling piece is falling fast.
 		fastFall: false
 	};
+}
+
+/**
+ * Creates the game board.
+ * @param {object} game The game state.
+ * @param {number} nrRows The number of rows in the game board.
+ * @param {number} nrCols The number of columns in the game board.
+ */
+function createBoard(game, nrRows = 25, nrCols = 10) {
+	game.board = Board.create(nrRows, nrCols);
 }
 
 /**
@@ -220,6 +229,7 @@ export {
 	advance,
 	cheat,
 	create,
+	createBoard,
 	moveLeft,
 	moveRight,
 	rotateLeft,

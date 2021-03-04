@@ -5,12 +5,13 @@ import { getGameActions } from '../actions/TetrisGame';
 import Board from './Board';
 import { useGameInput } from './hooks/input';
 import { useAdvanceTimer } from './hooks/timer';
+import { useGameState } from './hooks/gameState';
 import './style.css';
 
 // The game component.
-export default function TetrisGame({game}) {
+export default function TetrisGame({gameId = "", nrRows, nrCols}) {
+	const {score, board, gameState, fastFall} = useGameState(gameId, nrRows, nrCols);
 	const gameDomRef = React.useRef(null);
-	const {score, board, gameState, fastFall, gameId} = game;
 	const actions = getGameActions(gameId);
 	useGameInput(gameDomRef, gameId);
 	useAdvanceTimer(gameState, fastFall, actions.advance);

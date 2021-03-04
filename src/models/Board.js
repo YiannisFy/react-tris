@@ -1,7 +1,5 @@
 import * as TetrisPiece from './TetrisPiece.js';
 
-const Rows = 20, Cols = 10;
-
 // Game board operations.
 // Each operation takes the board object as an argument, save for the create operation.
 // The game board consists of rows, which consist of blocks.
@@ -13,10 +11,10 @@ const Rows = 20, Cols = 10;
  * As a reducer, it returns the empty board as the new state.
  * @returns {object} A new game board.
  */
-function create() {
+function create(nrRows, nrCols) {
 	let board = {
-		rows: new Array(Rows),
-		nrCols: Cols
+		rows: new Array(nrRows),
+		nrCols
 	}
 	reset(board);
 	return board;
@@ -64,9 +62,10 @@ function putPiece(board, piece, blockValue) {
  */
 function checkPiece(board, piece) {
 	const {nrCols, rows} = board;
+	const nrRows = rows.length;
 	for (const block of piece.blocks) {
 		if (block.col < 0 || block.col >= nrCols
-			|| block.row < 0 || block.row >= Rows
+			|| block.row < 0 || block.row >= nrRows
 			|| false !== rows[block.row][block.col]) {
 			return false;
 		}
@@ -152,11 +151,12 @@ function cheat(board) {
  */
 function removeFullRows(board) {
 	const {nrCols, rows} = board;
+	const nrRows = rows.length;
 	let removed = 0;
-	for (let r = Rows - 1; r >= 0; r--) {
+	for (let r = nrRows - 1; r >= 0; r--) {
 		let row = rows[r];
 		let fullRow = true;
-		for (let c = Cols - 1; c >= 0; c--) {
+		for (let c = nrCols - 1; c >= 0; c--) {
 			if (false === row[c]) {
 				fullRow = false;
 				break;
