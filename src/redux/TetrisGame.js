@@ -50,7 +50,7 @@ export function getSlice(gameId = "") {
 /**
  * Associates a game component with the Redux slice for the game instance.
  * This method is intended for use when the corresponding game component is mounted.
- * It should be paired with a call to <code>releaseSlice</code> when the game component is unmounted to have the slice removed.
+ * It should be paired with a call to `releaseSlice` when the game component is unmounted to have the slice removed.
  * @param {string} gameId Identifies the game instance (is empty string by default).
  */
 export function attachSlice(gameId) {
@@ -61,7 +61,7 @@ export function attachSlice(gameId) {
 }
 
 /**
- * Releases a reference to the Redux slice for the specified game instance and removes the slice entirely when there are no components attached to it (<code>attachSlice</code>).
+ * Releases a reference to the Redux slice for the specified game instance and removes the slice entirely when there are no components attached to it (`attachSlice`).
  * @param {string} gameId The game ID, by default the empty string.
  */
 export function detachSlice(gameId = "") {

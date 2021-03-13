@@ -26,7 +26,7 @@ export class KeyBindings {
 	/**
 	 * Resolves a key to its bound action.
 	 * @param {string} key Identifies a pressed key.
-	 * @returns One of the <code>InputActions</code> values or <code>null</code> if the key is not bound to an action.
+	 * @returns One of the `InputActions` values or `null` if the key is not bound to an action.
 	 */
 	resolveAction(key) {
 		for (const actionName in InputActions) {
