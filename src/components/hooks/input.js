@@ -28,5 +28,5 @@ export function useGameInput(gameDomRef, gameId, bindings = new KeyBindings()) {
 			document.removeEventListener('keyup', ku);
 			gameDom.removeEventListener('click', oc);
 		};
-	}, [gameId, gameDomRef]);
+	}, [gameId, gameDomRef, bindings]);
 }
