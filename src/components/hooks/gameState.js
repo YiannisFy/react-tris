@@ -1,8 +1,18 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { getGameActions } from '../../actions/TetrisGame';
 import { create, createBoard } from '../../models/TetrisGame';
-import { getSlice } from '../../redux/TetrisGame';
+import { useLazySliceState } from '../../redux/lazySlice';
+import { attachSlice, detachSlice, getSlice } from '../../redux/TetrisGame';
+
+function useGameSlice(gameId) {
+    // Ensure there is a slice instance without waiting for the side effect to run.
+    const slice = getSlice(gameId);
+
+    useEffect(() => {
+        attachSlice(gameId);
+        return () => { detachSlice(gameId); }
+    }, [gameId]);
+    return slice;
+}
 
 /**
  * Selects/creates the state of the specified game without enforcing the board to be created.
@@ -10,22 +20,8 @@ import { getSlice } from '../../redux/TetrisGame';
  * @returns The game state without guarantees that the board has been created.
  */
 export function useBoardlessState(gameId="") {
-    // Select the state.
-    let gState = useSelector(state => state[`reactris-${gameId}`]);
-    const initGame = !gState;
-
-    useEffect(() => {
-        // If the game does not exist, create a Redux slice for it.
-        if (initGame)
-            getSlice(gameId);
-    }, [initGame, gameId]);
-
-    // Surrogate state for until Redux slice has been initialized (next render).
-    // NOTE: Must be identical to the slice created in the effect below.
-    if (!gState)
-        gState = create(gameId);
-
-    return gState;
+    const slice = useGameSlice(gameId);
+    return useLazySliceState(slice, sliceState => sliceState || create(gameId));
 }
 
 /**
@@ -36,25 +32,13 @@ export function useBoardlessState(gameId="") {
  * @returns {object} The game state.
  */
 export function useGameState(gameId="", nrRows = 25, nrCols = 10) {
-    let gState = useBoardlessState(gameId)
-    const initBoard = !gState.board;
-
-    // Surrogate for missing board data.
-    // NOTE: Must be identical to the data created by the "createBoard" Redux action in the effect below.
-    // TODO: Consider eliminating double model creation by passing the new board as payload to the action.
-    if (initBoard) {
-        gState = {
-            ...gState,
-        };
-        createBoard(gState, nrRows, nrCols);
-    }
-
-    useEffect(() => {
-        if (initBoard) {
-            const {createBoard: createBoardAction} = getGameActions(gameId);
-            createBoardAction({nrRows, nrCols});
+    const slice = useGameSlice(gameId);
+    return useLazySliceState(slice, gState =>  {
+        if (!gState) gState = create(gameId);
+        else if (!gState.board) {
+            gState = {...gState};
+            createBoard(gState, nrRows, nrCols);
         }
-    }, [initBoard, gameId, nrRows, nrCols]);
-
-    return gState;
+        return gState;
+    })
 }
