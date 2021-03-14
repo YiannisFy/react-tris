@@ -5,6 +5,11 @@
   justify-content: center;
 }
 
+.game-column {
+	display: inline-table;
+	margin: 1vmax;
+}
+
 .block-row {
 	display: table-row;
 	border-width: 0;

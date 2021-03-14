@@ -20,6 +20,8 @@ function create(gameId = "") {
 	return {
 		gameId: gameId,
 		curPiece: null,
+		nextPiece: null,
+		nextGrid: Board.create(4, 4),
 		score: 0,
 		remCheats: MaxCheats,
 		gameState: GameStates.Stopped,
@@ -43,7 +45,8 @@ function createBoard(game, nrRows = 25, nrCols = 10) {
  * @param {object} game The game model.
  */
 function resetProgress(game) {
-	game.curPiece = null;
+	game.curPiece = game.nextPiece = null;
+	Board.reset(game.nextGrid);
 	Board.reset(game.board);
 	game.score = 0;
 	game.remCheats = MaxCheats;
@@ -65,7 +68,7 @@ function settleCurrentPiece(game) {
  */
 function spawnPiece(game) {
 	const board = game.board;
-	let piece = TetrisPiece.createRandom();
+	let piece = game.nextPiece;
 	let bounds = TetrisPiece.getBounds(piece);
 	let col = Math.trunc((board.nrCols - bounds.right) / 2); // Uses 0-based bounds as size.
 
@@ -74,6 +77,10 @@ function spawnPiece(game) {
 	if (Board.checkPiece(board, piece)) {
 		Board.putPiece(board, piece, piece.colorIndex);
 		game.curPiece = piece;
+		const nextPiece = game.nextPiece = TetrisPiece.createRandom();
+		const nextGrid = game.nextGrid;
+		Board.reset(nextGrid);
+		Board.putPiece(nextGrid, nextPiece, nextPiece.colorIndex)
 		return true;
 	}
 
@@ -181,6 +188,8 @@ function startGame(game) {
 	if (GameStates.Running !== game.gameState) {
 		game.gameState = GameStates.Running;
 		resetProgress(game);
+		// Create the next piece.
+		game.nextPiece = TetrisPiece.createRandom();
 	}
 }
 
