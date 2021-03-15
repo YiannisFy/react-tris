@@ -30,6 +30,7 @@ export function getSlice(gameId = "") {
 			createBoard: (state, {payload: {nrRows, nrCols}}) => GameModel.createBoard(state, nrRows, nrCols),
 			startGame: GameModel.startGame,
 			stopGame: GameModel.stopGame,
+			pauseGame: GameModel.togglePaused,
 			moveLeft: GameModel.moveLeft,
 			moveRight: GameModel.moveRight,
 			rotateLeft: GameModel.rotateLeft,

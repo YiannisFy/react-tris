@@ -31,8 +31,14 @@ export function onKeyUp(evt, gameActions, bindings) {
 export function onKeyDown(evt, gameActions, bindings) {
 	let handled = true;
 	switch (bindings.resolveAction(evt.key)) {
+		case InputActions.startGame:
+			gameActions.startGame();
+			break;
 		case InputActions.stopGame:
 			gameActions.stopGame();
+			break;
+		case InputActions.pauseGame:
+			gameActions.pauseGame();
 			break;
 		case InputActions.fastDrop:
 			gameActions.setFastDrop(true);
@@ -51,9 +57,6 @@ export function onKeyDown(evt, gameActions, bindings) {
 			break;
 		case InputActions.cheat:
 			gameActions.cheat();
-			break;
-		case InputActions.startGame:
-			gameActions.startGame();
 			break;
 		default:
 			// We handle this to avoid having the page scroll up while playing.

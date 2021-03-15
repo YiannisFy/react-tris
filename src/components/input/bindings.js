@@ -4,18 +4,20 @@
 export const InputActions = {
 	startGame: 0,
 	stopGame: 1,
-	fastDrop: 2,
-	moveLeft: 3,
-	moveRight: 4,
-	rotateLeft: 5,
-	rotateRight: 6,
-	cheat: 7
+	pauseGame: 2,
+	fastDrop: 3,
+	moveLeft: 4,
+	moveRight: 5,
+	rotateLeft: 6,
+	rotateRight: 7,
+	cheat: 8
 };
 
 export class KeyBindings {
 	// Default bindings.
 	startGame = ' ';
 	stopGame = 'Escape';
+	pauseGame = ['p', 'P'];
 	fastDrop = 'ArrowDown';
 	moveLeft = 'ArrowLeft';
 	moveRight = 'ArrowRight';

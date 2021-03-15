@@ -16,11 +16,18 @@ export default function TetrisGame({gameId = "", nrRows, nrCols}) {
 	useGameInput(gameDomRef, gameId);
 	useAdvanceTimer(gameState, fastFall, actions.advance);
 
-	const cssClass = (gameState === GameStates.Running) ? "game" : "game stopped";
+	const cssClass = (gameState !== GameStates.Stopped) ? "game" : "game stopped";
 	const gcCssClass = "game-column";
+	let sStatus;
+	switch(gameState) {
+		case GameStates.Stopped: sStatus = " - stopped"; break;
+		case GameStates.Paused: sStatus = " - paused"; break;
+		default: sStatus = "";
+	}
+
 	return (
 		<div className={cssClass} ref={gameDomRef}>
-			<div>Score: {score}{gameState === GameStates.Stopped ? " - stopped" : ""}</div>
+			<div>Score: {score}{sStatus}</div>
 			<div>
 				<div className={gcCssClass}>
 					<Board rows={board.rows} />

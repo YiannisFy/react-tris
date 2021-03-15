@@ -3,7 +3,8 @@ import * as TetrisPiece from './TetrisPiece.js';
 
 const GameStates = {
 	Stopped: 0,
-	Running: 1
+	Running: 1,
+	Paused: 2
 };
 
 const MaxCheats = 3;
@@ -203,6 +204,17 @@ function stopGame(game) {
 }
 
 /**
+ * Pauses/resumes the game.
+ * @param {object} game The game model.
+ */
+function togglePaused(game) {
+	switch(game.gameState) {
+		case GameStates.Running: game.gameState = GameStates.Paused; break;
+		case GameStates.Paused: game.gameState = GameStates.Running; break;
+	}
+}
+
+/**
  * Controls fast drop. Has no effect if the game is not running.
  * @param {object} game The game model.
  * @param {boolean} value Whether fast-drop should be active.
@@ -245,5 +257,6 @@ export {
 	rotateRight,
 	setFastDrop,
 	startGame,
-	stopGame
+	stopGame,
+	togglePaused
 };
